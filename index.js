@@ -136,3 +136,97 @@ const updateProgressBar = () => {
 
 // Initial call to start the progress bar
 updateProgressBar();
+
+
+
+// fetch data
+
+// Function to fetch data from the server
+const fetchDataFromServer = async () => {
+  try {
+      const response = await fetch('http://localhost:5000/api/wazirx/');
+      if (!response.ok) {
+          throw new Error('Failed to fetch data');
+      }
+
+      const data = await response.json();
+      return data;
+  } catch (error) {
+      console.error('Error fetching data:', error.message);
+  }
+};
+
+// Function to generate serial numbers
+const generateSerialNumbers = (data) => {
+  return data.map((item, index) => {
+      return { ...item, serialNumber: index + 1 };
+  });
+};
+
+const processData = (item) => {
+  console.log(item.serialNumber);
+  
+  let name = item.name
+  
+  const last = item.last;
+  const buy = item.buy;
+  const sell = item.sell;
+  let diff = ((item.sell - item.buy) * 100 ) / item.buy;
+  let saving = (item.sell - item.buy) * item.volume 
+  // ans=-0.1434
+  return {
+    name: name,
+    last: last,
+    buy: buy,
+    sell: sell,
+    difference: diff,
+    savings: saving
+};
+
+
+}
+
+// Function to render the table rows
+const renderTableRows = (data) => {
+  const tableBody = document.getElementById('tableBody');
+  tableBody.innerHTML = '';
+
+  data.forEach((item) => {
+    const last = item.last;
+    const buy = item.buy;
+    const sell = item.sell;
+    const difference = sell - buy;
+    const percentageChange = buy == 0 ? 0 : ((sell - buy) * 100) / buy; // Avoid division by zero
+    const baseUnit = item.base_unit;
+    const savings =  (item.sell - item.buy) * item.volume 
+
+      const row = document.createElement('tr');
+    
+      const color = buy === 0 ? 'red' : 'white';
+      const percentageColor = percentageChange === 0 ? '#ef4444' : 'green';
+      const savingColor = savings === 0 ? '#ef4444': 'green'
+      row.innerHTML = `
+           <td>${item.serialNumber}</td>
+            <td>${item.name}</td>
+            <td>₹ ${last}</td>
+            <td>₹ ${buy} / ₹ ${sell}</td>
+            <td style="color: ${percentageColor}">${percentageChange.toFixed(2)}%</td>
+            <td  style="color: ${savingColor}">${savings} %</td>
+      `;
+      tableBody.appendChild(row);
+  });
+};
+
+// Fetch data and render the table
+const fetchDataAndRenderTable = async () => {
+  const data = await fetchDataFromServer();
+  if (data) {
+      const dataWithSerialNumbers = generateSerialNumbers(data);
+      console.log(dataWithSerialNumbers);
+      
+      renderTableRows(dataWithSerialNumbers);
+  }
+};
+
+// Call the function to fetch data and render the table
+fetchDataAndRenderTable();
