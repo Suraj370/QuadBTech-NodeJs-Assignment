@@ -263,6 +263,7 @@ input:checked + .slider:before {
     padding-right: 25px;
     color: #fff;
     font-family: Oswald;
+    overflow-x: scroll;
   
   
   
