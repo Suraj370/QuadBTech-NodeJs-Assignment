@@ -206,7 +206,7 @@ const renderTableRows = (data) => {
       const percentageColor = percentageChange === 0 ? '#ef4444' : 'green';
       const savingColor = savings === 0 ? '#ef4444': 'green'
       row.innerHTML = `
-           <td>${item.serialNumber}</td>
+           <td >${item.serialNumber}</td>
             <td>${item.name}</td>
             <td>₹ ${last}</td>
             <td>₹ ${buy} / ₹ ${sell}</td>
